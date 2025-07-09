@@ -1,0 +1,474 @@
+{
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 25
+    },
+    "configurePresets": [
+        {
+            "name": "default",
+            "hidden": true,
+            "cacheVariables": {
+                "PRESET_NAME": {
+                    "type": "STRING",
+                    "value": "${presetName}"
+                }
+            }
+        },
+
+        {
+            "name": "windows",
+            "hidden": true,
+            "cmakeExecutable": "cmake.exe",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "linux",
+            "hidden": true,
+            "cmakeExecutable": "cmake",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Linux"
+            }
+        },
+        {
+            "name": "darwin",
+            "hidden": true,
+            "cmakeExecutable": "cmake",
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
+            }
+        },
+
+        {
+            "name": "ninja",
+            "hidden": true,
+            "generator": "Ninja"
+        },
+
+        {
+            "name": "msvc-x64-x64",
+            "hidden": true,
+            "toolset": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "build/msvc-x64-x64-toolchain.cmake"
+                }
+            }
+        },
+        {
+            "name": "gcc",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "build/gcc-toolchain.cmake"
+                },
+                "CONAN_COMPILER_LIBCXX": {
+                    "type": "STRING",
+                    "value": "libstdc++11"
+                }
+            }
+        },
+        {
+            "name": "clang",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": {
+                    "type": "FILEPATH",
+                    "value": "build/clang-toolchain.cmake"
+                }
+            }
+        },
+
+        {
+            "name": "interface",
+            "hidden": true,
+            "cacheVariables": {
+                "INTERFACE_ONLY": {
+                    "type": "BOOL",
+                    "value": true
+                },
+                "BUILD_SHARED_LIBS": {
+                    "type": "BOOL",
+                    "value": false
+                },
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                },
+                "CMAKE_MSVC_RUNTIME_LIBRARY": {
+                    "type": "STRING",
+                    "value": "MultiThreadedDebug"
+                }
+            }
+        },
+        {
+            "name": "static",
+            "hidden": true,
+            "cacheVariables": {
+                "BUILD_SHARED_LIBS": {
+                    "type": "BOOL",
+                    "value": false
+                }
+            }
+        },
+        {
+            "name": "shared",
+            "hidden": true,
+            "cacheVariables": {
+                "BUILD_SHARED_LIBS": {
+                    "type": "BOOL",
+                    "value": true
+                }
+            }
+        },
+
+        {
+            "name": "debug",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Debug"
+                }
+            }
+        },
+        {
+            "name": "release",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": {
+                    "type": "STRING",
+                    "value": "Release"
+                }
+            }
+        },
+
+        {
+            "name": "mtd",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_MSVC_RUNTIME_LIBRARY": {
+                    "type": "STRING",
+                    "value": "MultiThreadedDebug"
+                }
+            }
+        },
+        {
+            "name": "mdd",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_MSVC_RUNTIME_LIBRARY": {
+                    "type": "STRING",
+                    "value": "MultiThreadedDebugDLL"
+                }
+            }
+        },
+        {
+            "name": "mt",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_MSVC_RUNTIME_LIBRARY": {
+                    "type": "STRING",
+                    "value": "MultiThreaded"
+                }
+            }
+        },
+        {
+            "name": "md",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_MSVC_RUNTIME_LIBRARY": {
+                    "type": "STRING",
+                    "value": "MultiThreadedDLL"
+                }
+            }
+        },
+
+        {
+            "name": "windows.ninja.msvc-x64-x64.interface",
+            "hidden": true,
+            "inherits": ["default", "windows", "ninja", "msvc-x64-x64", "interface"],
+            "binaryDir": "${sourceDir}/build/0"
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.debug.static",
+            "inherits": ["default", "windows", "ninja", "msvc-x64-x64", "debug", "static", "mtd"],
+            "binaryDir": "${sourceDir}/build/1"
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.debug.shared",
+            "hidden": true,
+            "inherits": ["default", "windows", "ninja", "msvc-x64-x64", "debug", "shared", "mdd"],
+            "binaryDir": "${sourceDir}/build/2"
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.release.static",
+            "inherits": ["default", "windows", "ninja", "msvc-x64-x64", "release", "static", "mt"],
+            "binaryDir": "${sourceDir}/build/3"
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.release.shared",
+            "hidden": true,
+            "inherits": ["default", "windows", "ninja", "msvc-x64-x64", "release", "shared", "md"],
+            "binaryDir": "${sourceDir}/build/4"
+        },
+
+        {
+            "name": "linux.ninja.gcc.interface",
+            "hidden": true,
+            "inherits": ["default", "linux", "ninja", "gcc", "interface"],
+            "binaryDir": "${sourceDir}/build/5"
+        },
+        {
+            "name": "linux.ninja.gcc.debug.static",
+            "inherits": ["default", "linux", "ninja", "gcc", "debug", "static"],
+            "binaryDir": "${sourceDir}/build/6"
+        },
+        {
+            "name": "linux.ninja.gcc.debug.shared",
+            "hidden": true,
+            "inherits": ["default", "linux", "ninja", "gcc", "debug", "shared"],
+            "binaryDir": "${sourceDir}/build/7"
+        },
+        {
+            "name": "linux.ninja.gcc.release.static",
+            "inherits": ["default", "linux", "ninja", "gcc", "release", "static"],
+            "binaryDir": "${sourceDir}/build/8"
+        },
+        {
+            "name": "linux.ninja.gcc.release.shared",
+            "hidden": true,
+            "inherits": ["default", "linux", "ninja", "gcc", "release", "shared"],
+            "binaryDir": "${sourceDir}/build/9"
+        },
+
+        {
+            "name": "darwin.ninja.clang.interface",
+            "hidden": true,
+            "inherits": ["default", "darwin", "ninja", "clang", "interface"],
+            "binaryDir": "${sourceDir}/build/10"
+        },
+        {
+            "name": "darwin.ninja.clang.debug.static",
+            "inherits": ["default", "darwin", "ninja", "clang", "debug", "static"],
+            "binaryDir": "${sourceDir}/build/11"
+        },
+        {
+            "name": "darwin.ninja.clang.debug.shared",
+            "hidden": true,
+            "inherits": ["default", "darwin", "ninja", "clang", "debug", "shared"],
+            "binaryDir": "${sourceDir}/build/12"
+        },
+        {
+            "name": "darwin.ninja.clang.release.static",
+            "inherits": ["default", "darwin", "ninja", "clang", "release", "static"],
+            "binaryDir": "${sourceDir}/build/13"
+        },
+        {
+            "name": "darwin.ninja.clang.release.shared",
+            "hidden": true,
+            "inherits": ["default", "darwin", "ninja", "clang", "release", "shared"],
+            "binaryDir": "${sourceDir}/build/14"
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "default",
+            "hidden": true,
+            "jobs": 4
+        },
+
+        {
+            "name": "windows.ninja.msvc-x64-x64.interface",
+            "configurePreset": "windows.ninja.msvc-x64-x64.interface",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.debug.static",
+            "configurePreset": "windows.ninja.msvc-x64-x64.debug.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.debug.shared",
+            "configurePreset": "windows.ninja.msvc-x64-x64.debug.shared",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.release.static",
+            "configurePreset": "windows.ninja.msvc-x64-x64.release.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.release.shared",
+            "configurePreset": "windows.ninja.msvc-x64-x64.release.shared",
+            "inherits": ["default"]
+        },
+
+        {
+            "name": "linux.ninja.gcc.interface",
+            "configurePreset": "linux.ninja.gcc.interface",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.debug.static",
+            "configurePreset": "linux.ninja.gcc.debug.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.debug.shared",
+            "configurePreset": "linux.ninja.gcc.debug.shared",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.release.static",
+            "configurePreset": "linux.ninja.gcc.release.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.release.shared",
+            "configurePreset": "linux.ninja.gcc.release.shared",
+            "inherits": ["default"]
+        },
+
+        {
+            "name": "darwin.ninja.clang.interface",
+            "configurePreset": "darwin.ninja.clang.interface",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.debug.static",
+            "configurePreset": "darwin.ninja.clang.debug.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.debug.shared",
+            "configurePreset": "darwin.ninja.clang.debug.shared",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.release.static",
+            "configurePreset": "darwin.ninja.clang.release.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.release.shared",
+            "configurePreset": "darwin.ninja.clang.release.shared",
+            "inherits": ["default"]
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "default",
+            "hidden": true,
+            "output": {
+                "verbosity": "verbose",
+                "outputOnFailure": true
+            },
+            "filter": {
+                "exclude": {
+                    "name": "(ExcludedTests\\..*)|(ExcludedTests\\.test1)|(ExcludedTests\\.test2)"
+                }
+            },
+            "execution": {
+                "noTestsAction": "error",
+                "stopOnFailure": true,
+                "timeout": 120
+            }
+        },
+
+        {
+            "name": "windows.ninja.msvc-x64-x64.interface",
+            "configurePreset": "windows.ninja.msvc-x64-x64.interface",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.debug.static",
+            "configurePreset": "windows.ninja.msvc-x64-x64.debug.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.debug.shared",
+            "configurePreset": "windows.ninja.msvc-x64-x64.debug.shared",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.release.static",
+            "configurePreset": "windows.ninja.msvc-x64-x64.release.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "windows.ninja.msvc-x64-x64.release.shared",
+            "configurePreset": "windows.ninja.msvc-x64-x64.release.shared",
+            "inherits": ["default"]
+        },
+
+        {
+            "name": "linux.ninja.gcc.interface",
+            "configurePreset": "linux.ninja.gcc.interface",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.debug.static",
+            "configurePreset": "linux.ninja.gcc.debug.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.debug.shared",
+            "configurePreset": "linux.ninja.gcc.debug.shared",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.release.static",
+            "configurePreset": "linux.ninja.gcc.release.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "linux.ninja.gcc.release.shared",
+            "configurePreset": "linux.ninja.gcc.release.shared",
+            "inherits": ["default"]
+        },
+
+        {
+            "name": "darwin.ninja.clang.interface",
+            "configurePreset": "darwin.ninja.clang.interface",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.debug.static",
+            "configurePreset": "darwin.ninja.clang.debug.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.debug.shared",
+            "configurePreset": "darwin.ninja.clang.debug.shared",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.release.static",
+            "configurePreset": "darwin.ninja.clang.release.static",
+            "inherits": ["default"]
+        },
+        {
+            "name": "darwin.ninja.clang.release.shared",
+            "configurePreset": "darwin.ninja.clang.release.shared",
+            "inherits": ["default"]
+        }
+    ]
+}

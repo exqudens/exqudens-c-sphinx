@@ -139,10 +139,12 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_EXTENSIONS FALSE)
 
 add_library("${PROJECT_NAME}"
-    "src/main/c/exqudens/math.h"
-    "src/main/c/exqudens/math.c"
     "src/main/c/exqudens/sub_process.h"
     "src/main/c/exqudens/sub_process.c"
+    "src/main/c/exqudens/math.h"
+    "src/main/c/exqudens/math.c"
+    "src/main/c/exqudens/string.h"
+    "src/main/c/exqudens/string.c"
 )
 target_include_directories("${PROJECT_NAME}" PUBLIC
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src/main/c>"

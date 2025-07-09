@@ -209,6 +209,7 @@
         },
         {
             "name": "windows.ninja.msvc-x64-x64.debug.static",
+            "hidden": true,
             "inherits": ["default", "windows", "ninja", "msvc-x64-x64", "debug", "static", "mtd"],
             "binaryDir": "${sourceDir}/build/1"
         },
@@ -238,6 +239,7 @@
         },
         {
             "name": "linux.ninja.gcc.debug.static",
+            "hidden": true,
             "inherits": ["default", "linux", "ninja", "gcc", "debug", "static"],
             "binaryDir": "${sourceDir}/build/6"
         },
@@ -267,6 +269,7 @@
         },
         {
             "name": "darwin.ninja.clang.debug.static",
+            "hidden": true,
             "inherits": ["default", "darwin", "ninja", "clang", "debug", "static"],
             "binaryDir": "${sourceDir}/build/11"
         },

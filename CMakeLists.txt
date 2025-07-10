@@ -139,8 +139,6 @@ set(CMAKE_C_STANDARD_REQUIRED TRUE)
 set(CMAKE_C_EXTENSIONS FALSE)
 
 add_library("${PROJECT_NAME}"
-    "src/main/c/exqudens/sub_process.h"
-    "src/main/c/exqudens/sub_process.c"
     "src/main/c/exqudens/math.h"
     "src/main/c/exqudens/math.c"
     "src/main/c/exqudens/string.h"
@@ -170,26 +168,91 @@ set_target_properties("${PROJECT_NAME}" PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY_DEBUG          "${PROJECT_BINARY_DIR}/main/lib"
 )
 
-add_custom_target("doc-modules"
+add_custom_command(
+    OUTPUT "${PROJECT_BINARY_DIR}/doxygen/main/xml/index.xml"
     COMMAND "${CMAKE_COMMAND}" "-P" "${CMAKE_UTIL_FILE}" "--" "doxygen"
             SOURCE_BASE_DIR "${PROJECT_SOURCE_DIR}"
             SOURCE_DIR "src/main/c"
             OUTPUT_DIR "build/doxygen/main"
-            DOXYFILE "doc/doxygenfile.txt"
-            CLEAN "true"
+            DOXYFILE "doc/main-doxygenfile.txt"
+            CLEAN "1"
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    USES_TERMINAL
+    VERBATIM
+)
+
+add_custom_command(
+    OUTPUT "${PROJECT_BINARY_DIR}/doxygen/main-no-group/xml/index.xml"
+    COMMAND "${CMAKE_COMMAND}" "-P" "${CMAKE_UTIL_FILE}" "--" "doxygen"
+            SOURCE_BASE_DIR "${PROJECT_SOURCE_DIR}"
+            SOURCE_DIR "src/main/c"
+            OUTPUT_DIR "build/doxygen/main-no-group"
+            DOXYFILE "doc/main-no-group-doxygenfile.txt"
+            CLEAN "1"
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    USES_TERMINAL
+    VERBATIM
+)
+
+add_custom_target("doc-modules"
     COMMAND "${CMAKE_COMMAND}" "-P" "${CMAKE_UTIL_FILE}" "--" "sphinx"
             SOURCE_BASE_DIR "${PROJECT_SOURCE_DIR}"
+            BUILD_DIR "build/sphinx"
             CONF_JSON_VARS "PROJECT_DIR=${PROJECT_SOURCE_DIR}"
-                           "PROJECT_BREATHE_DEFAULT=main"
-                           "PROJECT_TITLE=${PROJECT_NAME} designs"
+                           #"PROJECT_BREATHE_DEFAULT=main"
+                           "PROJECT_TITLE=${PROJECT_NAME} modules"
                            "PROJECT_STYLE_DOCX=${PROJECT_SOURCE_DIR}/doc/style.docx"
-                           "PROJECT_GENERATED_INCLUDE_PATH=generated/designs-1-include.rst"
             OUTPUT_DIR "build/doc/modules"
             TYPE "modules"
             FILES "modules/modules.rst"
             EXTRA_FILES "conf_util.py"
-            BUILDERS "html"
-            WARNINGS_TO_ERRORS "true"
+            BUILDERS "docx"
+            WARNINGS_TO_ERRORS "1"
+            #SPHINX_WARNINGS_ERRORS_FILE "build/doc/modules/sphinx-warnings.txt"
+    DEPENDS "${PROJECT_BINARY_DIR}/doxygen/main/xml/index.xml"
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    VERBATIM
+    USES_TERMINAL
+)
+add_custom_target("doc-files"
+    COMMAND "${CMAKE_COMMAND}" "-P" "${CMAKE_UTIL_FILE}" "--" "sphinx"
+            SOURCE_BASE_DIR "${PROJECT_SOURCE_DIR}"
+            BUILD_DIR "build/sphinx"
+            CONF_JSON_VARS "PROJECT_DIR=${PROJECT_SOURCE_DIR}"
+                           #"PROJECT_BREATHE_DEFAULT=main"
+                           "PROJECT_TITLE=${PROJECT_NAME} files"
+                           "PROJECT_STYLE_DOCX=${PROJECT_SOURCE_DIR}/doc/style.docx"
+            OUTPUT_DIR "build/doc/files"
+            TYPE "files"
+            FILES "files/files.rst"
+            EXTRA_FILES "conf_util.py"
+            BUILDERS "docx"
+            WARNINGS_TO_ERRORS "1"
+            #SPHINX_WARNINGS_ERRORS_FILE "build/doc/files/sphinx-warnings.txt"
+    DEPENDS "${PROJECT_BINARY_DIR}/doxygen/main-no-group/xml/index.xml"
+    WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
+    VERBATIM
+    USES_TERMINAL
+)
+add_custom_target("doc-modules2files"
+    COMMAND "${CMAKE_COMMAND}" "-P" "${CMAKE_UTIL_FILE}" "--" "sphinx"
+            SOURCE_BASE_DIR "${PROJECT_SOURCE_DIR}"
+            BUILD_DIR "build/sphinx"
+            CONF_JSON_VARS "PROJECT_DIR=${PROJECT_SOURCE_DIR}"
+                           #"PROJECT_BREATHE_DEFAULT=main"
+                           "PROJECT_TITLE=${PROJECT_NAME} modules2files"
+                           "PROJECT_STYLE_DOCX=${PROJECT_SOURCE_DIR}/doc/style.docx"
+            OUTPUT_DIR "build/doc/modules2files"
+            TYPE "modules2files"
+            FILES "modules2files/modules2files.rst"
+                  "modules/modules.rst"
+                  "files/files.rst"
+            EXTRA_FILES "conf_util.py"
+            BUILDERS "docx"
+            WARNINGS_TO_ERRORS "0"
+            SPHINX_WARNINGS_ERRORS_FILE "build/doc/modules2files/sphinx-warnings.txt"
+    DEPENDS "${PROJECT_BINARY_DIR}/doxygen/main/xml/index.xml"
+            "${PROJECT_BINARY_DIR}/doxygen/main-no-group/xml/index.xml"
     WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}"
     VERBATIM
     USES_TERMINAL

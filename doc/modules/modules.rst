@@ -2,14 +2,12 @@
 |project| |release| modules
 ###########################
 
-.. .. doxygengroup:: exqudens_sub_process
-..     :content-only:
+.. item:: module_exqudens_math
 
-.. .. doxygengroup:: exqudens_string
-..     :content-only:
+    .. doxygengroup:: exqudens_math
+        :content-only:
 
-.. doxygenfile:: src/main/c/exqudens/sub_process.c
+.. item:: module_exqudens_string
 
-.. doxygenfile:: src/main/c/exqudens/math.c
-
-.. doxygenfile:: src/main/c/exqudens/string.c
+    .. doxygengroup:: exqudens_string
+        :content-only:

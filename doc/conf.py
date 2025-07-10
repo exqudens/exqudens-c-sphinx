@@ -16,13 +16,13 @@ import mlx.traceability
 
 # local
 sys.path.append(Path(__file__).parent.as_posix())
-from conf_util import ConfUtilDocUtils
-from conf_util import ConfUtilDocxBuilder
+from conf_util import ConfUtil
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 logger = sphinx.util.logging.getLogger(__name__)
+logger.info('bgn')
 confJson = json.loads(Path(__file__).parent.joinpath('conf.json').read_text())
 projectDir = confJson['PROJECT_DIR']
 logger.info(f"-- projectDir: '{projectDir}'")
@@ -71,7 +71,7 @@ traceability_notifications = {
 
 breathe_projects = {
     'main': str(Path(projectDir).joinpath('build', 'doxygen', 'main', 'xml')),
-    'test': str(Path(projectDir).joinpath('build', 'doxygen', 'test', 'xml'))
+    'main-no-group': str(Path(projectDir).joinpath('build', 'doxygen', 'main-no-group', 'xml'))
 }
 breathe_domain_by_extension = {
     'h': 'c',
@@ -79,7 +79,7 @@ breathe_domain_by_extension = {
     'hpp': 'cpp',
     'cpp': 'cpp'
 }
-breathe_default_project = confJson['PROJECT_BREATHE_DEFAULT']
+breathe_default_project = confJson.get('PROJECT_BREATHE_DEFAULT', 'main')
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -120,6 +120,6 @@ pdf_use_coverpage = False
 
 # -- Project setup -----------------------------------------------------
 def setup(app: Sphinx):
+    ConfUtil.setup(sphinx_application=app)
 
-    ConfUtilDocUtils.initialize(logger)
-    ConfUtilDocxBuilder.initialize(logger)
+logger.info('end')

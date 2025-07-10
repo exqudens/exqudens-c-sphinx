@@ -1,0 +1,11 @@
+PROJECT_NAME = main-no-group
+OUTPUT_DIRECTORY = build/doxygen/main-no-group
+RECURSIVE = YES
+INPUT = src/main/c
+ENABLE_PREPROCESSING = YES
+GENERATE_XML = YES
+GENERATE_HTML = NO
+GENERATE_LATEX = NO
+FILE_PATTERNS = *.c
+ALIASES = "addtogroup=@internal"
+QUIET = YES

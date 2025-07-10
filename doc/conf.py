@@ -105,7 +105,7 @@ docx_documents = [
 ]
 docx_coverpage = False
 docx_style = '' if confJson.get('PROJECT_DOCX_STYLE') is None else confJson['PROJECT_DOCX_STYLE']
-docx_pagebreak_before_section = int('0' if confJson.get('PROJECT_DOCX_PAGEBREAK_BEFORE_SECTION') is None else confJson['PROJECT_DOCX_PAGEBREAK_BEFORE_SECTION'])
+docx_pagebreak_before_section = int(confJson.get('PROJECT_DOCX_PAGEBREAK_BEFORE_SECTION', '1'))
 
 # -- Options for PDF output -------------------------------------------------
 # https://rst2pdf.org/static/manual.html#sphinx

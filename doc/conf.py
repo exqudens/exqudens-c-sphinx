@@ -101,8 +101,8 @@ html_static_path = [str(Path(mlx.traceability.__file__).parent.joinpath('assets'
 
 docx_documents = [
     (
-        'index',
-        confJson['PROJECT_TITLE'].replace(' ', '_') + '.docx',
+        confJson.get('PROJECT_RST_MAIN', 'index'),
+        confJson.get('PROJECT_TITLE', project).replace(' ', '_') + '.docx',
         {
             'title': project + ' documentation',
             'created': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
@@ -129,6 +129,6 @@ pdf_use_coverpage = False
 
 # -- Project setup -----------------------------------------------------
 def setup(app: Sphinx):
-    ConfUtil.setup(sphinx_application=app)
+    ConfUtil.sphinx_setup(sphinx_application=app)
 
 logger.info('end')

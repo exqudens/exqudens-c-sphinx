@@ -15,7 +15,3 @@
 .. item-matrix:: Module to file traceability
     :source: module_
     :target: file://
-
-#####################################
-remove-all-pages-after-including-this
-#####################################

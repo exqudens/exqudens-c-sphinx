@@ -45,7 +45,7 @@ class ConfUtil:
     docxbuilder_new_assemble_doctree = None
 
     @classmethod
-    def setup(
+    def sphinx_setup(
         cls,
 
         sphinx_application: None | Sphinx | Any,
@@ -331,7 +331,7 @@ class ConfUtil:
     def mlx_traceability_inspect_item(
         cls,
         name: None | str | Any,
-        collection: None | MlxTraceableCollection | None,
+        collection: None | MlxTraceableCollection | Any,
         config: None | Dict[str, List[str]] | Any = None,
         warning_to_error: bool = True,
         log: bool = False

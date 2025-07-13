@@ -1,6 +1,9 @@
+import sys
 import inspect
 from typing import Any
 from typing import List
+from typing import Set
+from typing import Dict
 from typing import Deque
 
 # docutils
@@ -14,6 +17,11 @@ from docutils.nodes import TreePruningException
 from sphinx.util.logging import SphinxLoggerAdapter
 from sphinx.application import Sphinx
 from sphinx.util.logging import getLogger as sphinx_get_logger
+
+# mlx.traceability
+from mlx.traceability import TraceableCollection as MlxTraceableCollection
+from mlx.traceable_item import TraceableItem as MlxTraceableItem
+from mlx.traceability_exception import TraceabilityException as MlxTraceabilityException
 
 # docxbuilder
 from docxbuilder import DocxBuilder
@@ -75,6 +83,19 @@ class ConfUtil:
             cls.docxbuilder_old_assemble_doctree = getattr(DocxBuilder, 'assemble_doctree')
             cls.docxbuilder_new_assemble_doctree = lambda docxbuilder_self, master, toctree_only: cls.docxbuilder_assemble_doctree(docxbuilder_self, master, toctree_only)
             setattr(DocxBuilder, 'assemble_doctree', cls.docxbuilder_new_assemble_doctree)
+
+    @classmethod
+    def log_message_as_warning_or_error(
+        cls,
+        message: None | str | Any,
+        as_error: bool = True,
+        exit_code: int = 1
+    ) -> None:
+        if as_error:
+            cls.logger.error(message)
+            sys.exit(exit_code)
+        else:
+            cls.logger.warning(message)
 
     @classmethod
     def docutils_to_string(cls, node: None | DocUtilsNode, include_path: bool = True) -> str:
@@ -305,3 +326,69 @@ class ConfUtil:
             cls.docutils_log_node(tree)
 
         return tree
+
+    @classmethod
+    def mlx_traceability_inspect_item(
+        cls,
+        name: None | str | Any,
+        collection: None | MlxTraceableCollection | None,
+        config: None | Dict[str, List[str]] | Any = None,
+        warning_to_error: bool = True,
+        log: bool = False
+    ) -> None:
+        if config is None:
+            return
+
+        if log:
+            cls.logger.info(f"-- {inspect.currentframe().f_code.co_name} name: '{name}'")
+
+        # check-input
+        if name is None:
+            cls.log_message_as_warning_or_error(f"'name' is none.", warning_to_error)
+        elif not isinstance(name, str):
+            cls.log_message_as_warning_or_error(f"'name' is not an instance of 'str'.", warning_to_error)
+
+        if collection is None:
+            cls.log_message_as_warning_or_error(f"'collection' is none.", warning_to_error)
+        elif not isinstance(collection, MlxTraceableCollection):
+            cls.log_message_as_warning_or_error(f"'collection' is not an instance of 'MlxTraceableCollection'.", warning_to_error)
+
+        if config is None:
+            cls.log_message_as_warning_or_error(f"'config' is none.", warning_to_error)
+        elif not isinstance(config, Dict):
+            cls.log_message_as_warning_or_error(f"'config' is not an instance of 'Dict'.", warning_to_error)
+
+        # process
+        item: None | MlxTraceableItem | Any = collection.get_item(name)
+
+        if item is None:
+            cls.log_message_as_warning_or_error(f"'item' is none.", warning_to_error)
+
+        try:
+            item.self_test()
+        except MlxTraceabilityException as e:
+            cls.log_message_as_warning_or_error(f"{e}", warning_to_error)
+            if warning_to_error:
+                raise e
+
+        item_dict: Dict[str, Any] = item.to_dict()
+        item_id: str = item_dict['id']
+        item_targets: Dict[str, Any] = item_dict.get('targets', dict())
+        config_keys: Set[str] = set(config.keys())
+
+        if log:
+            cls.logger.info(f"-- {inspect.currentframe().f_code.co_name} config keys: {config_keys}")
+
+        while config_keys:
+            prefix: str = config_keys.pop()
+            if not item_id.startswith(prefix):
+                continue
+            if log:
+                cls.logger.info(f"-- {inspect.currentframe().f_code.co_name} validate id: '{item_id}' targets: {item_targets}")
+            types: List[str] = config[prefix]
+            item_links: List[str] = []
+            for k, v in item_targets.items():
+                if k in types:
+                    item_links.extend(v)
+            if len(item_links) < 1:
+                cls.log_message_as_warning_or_error(f"'{item_id}' has no links with types: {types}", warning_to_error)

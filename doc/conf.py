@@ -66,6 +66,15 @@ traceability_notifications = {
     'undefined-reference': 'UNDEFINED_REFERENCE'
 }
 
+def traceability_inspect_item(name, collection):
+    ConfUtil.mlx_traceability_inspect_item(
+        name=name,
+        collection=collection,
+        config={
+            'module_': ['implemented_by']
+        }
+    )
+
 # -- Options for BREATHE -------------------------------------------------
 # https://breathe.readthedocs.io/en/latest/quickstart.html
 

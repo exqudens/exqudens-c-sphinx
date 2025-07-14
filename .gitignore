@@ -4,6 +4,7 @@
 .vscode/
 build/
 tmp/
+__pycache__/
 
 # Files
 *.iml

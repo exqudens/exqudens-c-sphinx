@@ -5,9 +5,9 @@
 .. item:: module_exqudens_math
 
     .. doxygengroup:: exqudens_math
-        :content-only:
+        :desc-only:
 
 .. item:: module_exqudens_string
 
     .. doxygengroup:: exqudens_string
-        :content-only:
+        :desc-only:

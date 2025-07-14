@@ -1,0 +1,7 @@
+Sphinx==6.2.1
+linuxdoc==20230506
+breathe==4.35.0
+mlx.traceability==10.0.0
+docxbuilder==1.2.0
+docxbuilder[math]
+rst2pdf==0.100
